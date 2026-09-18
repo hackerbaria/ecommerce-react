@@ -9,6 +9,38 @@
   }
 }
 
+.shop-page {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+
+    @include mobile {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  .product-card {
+    width: 100%;
+    max-width: none;
+    height: auto;
+  }
+
+  .product-card .product-card-img-wrapper {
+    width: 100%;
+    height: 280px;
+    padding: 1.5rem;
+  }
+
+  .product-card:hover .product-card-content {
+    transform: none;
+  }
+
+  .product-card-button {
+    position: static;
+    display: block;
+  }
+}
+
 .product-list-header {
   width: 100%;
   margin-bottom: $line-height;

@@ -1,0 +1,206 @@
+/* Extend Keycloak's forms; keep validation, MFA and accessibility behavior. */
+@font-face {
+  font-family: 'Tajawal';
+  src: url('../fonts/Tajawal-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tajawal';
+  src: url('../fonts/Tajawal-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+}
+
+:root {
+  --shop-background: #f9f9f9;
+  --shop-text: #4a4a4a;
+  --shop-heading: #1a1a1a;
+  --shop-border: #c5c5c5;
+  --shop-button: #101010;
+}
+
+html.login-pf,
+.login-pf body {
+  min-height: 100%;
+  background: var(--shop-background) none;
+  color: var(--shop-text);
+  font-family: 'Tajawal', Arial, sans-serif;
+  font-size: 16px;
+}
+
+.login-pf-page {
+  padding: 48px 24px;
+}
+
+#kc-header {
+  margin: 0 auto 32px;
+  color: var(--shop-heading);
+}
+
+#kc-header-wrapper {
+  padding: 0;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: none;
+}
+
+#kc-header-wrapper::before {
+  content: '';
+  display: block;
+  width: 200px;
+  height: 80px;
+  margin: 0 auto 8px;
+  background: url('../img/logo-full.png') center / contain no-repeat;
+}
+
+.login-pf-page .card-pf {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 36px 40px 0;
+  border: 1px solid var(--shop-border);
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+}
+
+.login-pf-page .login-pf-header {
+  margin-bottom: 28px;
+}
+
+#kc-page-title {
+  margin: 0;
+  color: var(--shop-heading);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: left;
+}
+
+#kc-content-wrapper {
+  margin-top: 0;
+}
+
+.login-pf-page .form-group {
+  margin-bottom: 22px;
+}
+
+.login-pf-page label,
+.login-pf-page .pf-c-form__label-text {
+  color: var(--shop-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.login-pf-page input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='button']):not([type='hidden']),
+.login-pf-page select,
+.login-pf-page textarea {
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid #e1e1e1;
+  border-radius: 0;
+  background: #fff;
+  color: var(--shop-heading);
+  font: inherit;
+  box-shadow: none;
+}
+
+.login-pf-page input:focus,
+.login-pf-page select:focus,
+.login-pf-page textarea:focus {
+  border-color: var(--shop-heading);
+  outline: 2px solid var(--shop-heading);
+  outline-offset: 2px;
+}
+
+.login-pf-page input[aria-invalid='true'] {
+  border-color: #b42318;
+}
+
+.login-pf-page .pf-c-button.pf-m-primary,
+.login-pf-page .btn-primary {
+  min-height: 48px;
+  padding: 12px 24px;
+  border: 1px solid var(--shop-button);
+  border-radius: 0;
+  background: var(--shop-button);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.login-pf-page .pf-c-button.pf-m-primary:hover,
+.login-pf-page .btn-primary:hover {
+  background: #303030;
+  border-color: #303030;
+}
+
+.login-pf-page .pf-c-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.login-pf-page a {
+  color: var(--shop-heading);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.login-pf-page a:focus-visible,
+.login-pf-page button:focus-visible,
+.login-pf-page input[type='submit']:focus-visible {
+  outline: 2px solid var(--shop-heading);
+  outline-offset: 3px;
+}
+
+#kc-form-buttons {
+  margin-top: 24px;
+  margin-bottom: 28px;
+}
+
+#kc-info {
+  margin: 28px -40px 0;
+}
+
+#kc-info-wrapper {
+  padding: 20px;
+  border-top: 1px solid var(--shop-border);
+  background: #f2f2f2;
+  color: var(--shop-text);
+  font-size: 14px;
+}
+
+#kc-registration a {
+  margin-left: 8px;
+  font-weight: 700;
+}
+
+.login-pf-page .kc-social-section {
+  margin-bottom: 28px;
+}
+
+.login-pf-page .kc-social-item {
+  min-height: 44px;
+  border: 1px solid var(--shop-border);
+  border-radius: 0;
+  background: #fff;
+  color: var(--shop-heading);
+}
+
+.login-pf-page .pf-c-input-group .pf-c-button {
+  border-radius: 0;
+}
+
+@media (max-width: 600px) {
+  .login-pf-page { padding: 24px 16px; }
+  #kc-header { margin-bottom: 24px; }
+  #kc-header-wrapper::before { width: 160px; height: 64px; }
+  .login-pf-page .card-pf { padding: 28px 24px 0; }
+  #kc-page-title { font-size: 23px; }
+  #kc-info { margin-right: -24px; margin-left: -24px; }
+}

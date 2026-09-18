@@ -8,6 +8,8 @@ import * as view from '@/views';
 import AdminRoute from './AdminRoute';
 import ClientRoute from './ClientRoute';
 import PublicRoute from './PublicRoute';
+import { usesKeycloak } from '@/services/keycloak';
+import KeycloakAuth from '@/views/auth/KeycloakAuth';
 
 // Revert back to history v4.10.0 because
 // v5.0 breaks navigation
@@ -45,16 +47,16 @@ const AppRouter = () => (
           path={ROUTES.RECOMMENDED_PRODUCTS}
         />
         <PublicRoute
-          component={view.SignUp}
+          component={usesKeycloak ? KeycloakAuth : view.SignUp}
           path={ROUTES.SIGNUP}
         />
         <PublicRoute
-          component={view.SignIn}
+          component={usesKeycloak ? KeycloakAuth : view.SignIn}
           exact
           path={ROUTES.SIGNIN}
         />
         <PublicRoute
-          component={view.ForgotPassword}
+          component={usesKeycloak ? KeycloakAuth : view.ForgotPassword}
           path={ROUTES.FORGOT_PASSWORD}
         />
         <Route
@@ -67,7 +69,7 @@ const AppRouter = () => (
           path={ROUTES.ACCOUNT}
         />
         <ClientRoute
-          component={view.EditAccount}
+          component={usesKeycloak ? KeycloakAuth : view.EditAccount}
           exact
           path={ROUTES.ACCOUNT_EDIT}
         />

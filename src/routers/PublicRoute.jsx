@@ -11,6 +11,7 @@ const PublicRoute = ({
 }) => (
   <Route
     {...rest}
+    path={path}
     // eslint-disable-next-line consistent-return
     render={(props) => {
       // eslint-disable-next-line react/prop-types

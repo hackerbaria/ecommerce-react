@@ -18,6 +18,8 @@ import { setAuthenticating, setAuthStatus } from '@/redux/actions/miscActions';
 import { clearProfile, setProfile } from '@/redux/actions/profileActions';
 import { history } from '@/routers/AppRouter';
 import firebase from '@/services/firebase';
+import keycloak, { usesKeycloak } from '@/services/keycloak';
+import { openSignInPopup } from '@/services/authPopup';
 
 function* handleError(e) {
   const obj = { success: false, type: 'auth', isError: true };
@@ -51,6 +53,24 @@ function* initRequest() {
 }
 
 function* authSaga({ type, payload }) {
+  if (usesKeycloak) {
+    try {
+      if (type === SIGNOUT) {
+        yield put(clearBasket());
+        yield put(clearProfile());
+        yield put(resetCheckout());
+        yield put(signOutSuccess());
+        yield call([keycloak, keycloak.logout], { redirectUri: window.location.origin });
+      } else if (type === SIGNUP) {
+        yield call(openSignInPopup, true);
+      } else if ([SIGNIN, RESET_PASSWORD, SIGNIN_WITH_GOOGLE, SIGNIN_WITH_FACEBOOK, SIGNIN_WITH_GITHUB].includes(type)) {
+        yield call(openSignInPopup);
+      }
+    } catch (e) {
+      yield handleError(e);
+    }
+    return;
+  }
   switch (type) {
     case SIGNIN:
       try {

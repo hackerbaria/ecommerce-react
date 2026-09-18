@@ -1,6 +1,6 @@
 import { useDidMount } from '@/hooks';
 import { useEffect, useState } from 'react';
-import firebase from '@/services/firebase';
+import productsApi from '@/services/products';
 
 const useFeaturedProducts = (itemsCount) => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -13,21 +13,14 @@ const useFeaturedProducts = (itemsCount) => {
       setLoading(true);
       setError('');
 
-      const docs = await firebase.getFeaturedProducts(itemsCount);
+      const items = await productsApi.getFeaturedProducts(itemsCount);
 
-      if (docs.empty) {
+      if (items.length === 0) {
         if (didMount) {
           setError('No featured products found.');
           setLoading(false);
         }
       } else {
-        const items = [];
-
-        docs.forEach((snap) => {
-          const data = snap.data();
-          items.push({ id: snap.ref.id, ...data });
-        });
-
         if (didMount) {
           setFeaturedProducts(items);
           setLoading(false);

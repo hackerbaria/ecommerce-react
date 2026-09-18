@@ -24,6 +24,9 @@ const ViewProduct = () => {
   const [selectedImage, setSelectedImage] = useState(product?.image || '');
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const imageCollection = Array.isArray(product?.imageCollection) ? product.imageCollection : [];
+  const sizes = Array.isArray(product?.sizes) ? product.sizes : [];
+  const availableColors = Array.isArray(product?.availableColors) ? product.availableColors : [];
 
   const {
     recommendedProducts,
@@ -35,6 +38,8 @@ const ViewProduct = () => {
 
   useEffect(() => {
     setSelectedImage(product?.image);
+    setSelectedSize('');
+    setSelectedColor('');
   }, [product]);
 
   const onSelectedSizeChange = (newValue) => {
@@ -49,7 +54,7 @@ const ViewProduct = () => {
   };
 
   const handleAddToBasket = () => {
-    addToBasket({ ...product, selectedColor, selectedSize: selectedSize || product.sizes[0] });
+    addToBasket({ ...product, selectedColor, selectedSize: selectedSize || sizes[0] || '' });
   };
 
   return (
@@ -73,9 +78,9 @@ const ViewProduct = () => {
             </h3>
           </Link>
           <div className="product-modal">
-            {product.imageCollection.length !== 0 && (
+            {imageCollection.length !== 0 && (
               <div className="product-modal-image-collection">
-                {product.imageCollection.map((image) => (
+                {imageCollection.map((image) => (
                   <div
                     className="product-modal-image-collection-wrapper"
                     key={image.id}
@@ -92,11 +97,11 @@ const ViewProduct = () => {
             )}
             <div className="product-modal-image-wrapper">
               {selectedColor && <input type="color" disabled ref={colorOverlay} id="color-overlay" />}
-              <ImageLoader
+              {selectedImage ? <ImageLoader
                 alt={product.name}
                 className="product-modal-image"
                 src={selectedImage}
-              />
+              /> : <span className="text-subtle">No image available</span>}
             </div>
             <div className="product-modal-details">
               <br />
@@ -107,25 +112,26 @@ const ViewProduct = () => {
               <br />
               <div className="divider" />
               <br />
-              <div>
+              {sizes.length > 0 && <div>
                 <span className="text-subtle">Lens Width and Frame Size</span>
                 <br />
                 <br />
                 <Select
                   placeholder="--Select Size--"
                   onChange={onSelectedSizeChange}
-                  options={product.sizes.sort((a, b) => (a < b ? -1 : 1)).map((size) => ({ label: `${size} mm`, value: size }))}
+                  value={selectedSize ? { label: `${selectedSize} mm`, value: selectedSize } : null}
+                  options={[...sizes].sort((a, b) => (a < b ? -1 : 1)).map((size) => ({ label: `${size} mm`, value: size }))}
                   styles={{ menu: (provided) => ({ ...provided, zIndex: 10 }) }}
                 />
-              </div>
+              </div>}
               <br />
-              {product.availableColors.length >= 1 && (
+              {availableColors.length >= 1 && (
                 <div>
                   <span className="text-subtle">Choose Color</span>
                   <br />
                   <br />
                   <ColorChooser
-                    availableColors={product.availableColors}
+                    availableColors={availableColors}
                     onSelectedColorChange={onSelectedColorChange}
                   />
                 </div>
@@ -149,7 +155,7 @@ const ViewProduct = () => {
             </div>
             {errorFeatured && !isLoadingFeatured ? (
               <MessageDisplay
-                message={error}
+                message={errorFeatured}
                 action={fetchRecommendedProducts}
                 buttonLabel="Try Again"
               />

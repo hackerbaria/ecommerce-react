@@ -2,7 +2,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import PropType from 'prop-types';
 import React, { useState } from 'react';
 
-const ImageLoader = ({ src, alt, className }) => {
+const ImageLoader = ({ src, alt, className, loading }) => {
   const loadedImages = {};
   const [loaded, setLoaded] = useState(loadedImages[src]);
 
@@ -24,19 +24,22 @@ const ImageLoader = ({ src, alt, className }) => {
         className={`${className || ''} ${loaded ? 'is-img-loaded' : 'is-img-loading'}`}
         onLoad={onLoad}
         src={src}
+        loading={loading}
       />
     </>
   );
 };
 
 ImageLoader.defaultProps = {
-  className: 'image-loader'
+  className: 'image-loader',
+  loading: 'eager'
 };
 
 ImageLoader.propTypes = {
   src: PropType.string.isRequired,
   alt: PropType.string,
-  className: PropType.string
+  className: PropType.string,
+  loading: PropType.oneOf(['eager', 'lazy'])
 };
 
 export default ImageLoader;

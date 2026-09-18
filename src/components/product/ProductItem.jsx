@@ -20,7 +20,7 @@ const ProductItem = ({ product, isItemOnBasket, addToBasket }) => {
   const itemOnBasket = isItemOnBasket ? isItemOnBasket(product.id) : false;
 
   const handleAddToBasket = () => {
-    if (addToBasket) addToBasket({ ...product, selectedSize: product.sizes[0] });
+    if (addToBasket) addToBasket({ ...product, selectedSize: product.sizes?.[0] || '' });
   };
 
   return (
@@ -44,6 +44,7 @@ const ProductItem = ({ product, isItemOnBasket, addToBasket }) => {
                 alt={product.name}
                 className="product-card-img"
                 src={product.image}
+                loading="lazy"
               />
             ) : <Skeleton width="100%" height="90%" />}
           </div>

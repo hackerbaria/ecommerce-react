@@ -4,10 +4,20 @@ import { displayActionMessage } from '@/helpers/utils';
 import { call, put, select } from 'redux-saga/effects';
 import { history } from '@/routers/AppRouter';
 import firebase from '@/services/firebase';
+import keycloak, { usesKeycloak } from '@/services/keycloak';
 import { setLoading } from '../actions/miscActions';
 import { updateProfileSuccess } from '../actions/profileActions';
 
 function* profileSaga({ type, payload }) {
+  if (usesKeycloak) {
+    try {
+      yield call([keycloak, keycloak.accountManagement]);
+    } catch (e) {
+      yield call(displayActionMessage, 'Unable to open account settings.', 'error');
+    }
+    yield put(setLoading(false));
+    return;
+  }
   switch (type) {
     case UPDATE_EMAIL: {
       try {

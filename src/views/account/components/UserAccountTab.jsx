@@ -58,7 +58,7 @@ const UserProfile = (props) => {
           <span>Date Joined</span>
           <br />
           {profile.dateJoined ? (
-            <h5>{displayDate(profile.dateJoined)}</h5>
+          <h5>{profile.dateJoined ? displayDate(profile.dateJoined) : 'Not available'}</h5>
           ) : (
             <h5 className="text-subtle text-italic">Not available</h5>
           )}

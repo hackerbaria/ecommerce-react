@@ -1,6 +1,6 @@
 import { useDidMount } from '@/hooks';
 import { useEffect, useState } from 'react';
-import firebase from '@/services/firebase';
+import productsApi from '@/services/products';
 
 const useRecommendedProducts = (itemsCount) => {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
@@ -13,21 +13,14 @@ const useRecommendedProducts = (itemsCount) => {
       setLoading(true);
       setError('');
 
-      const docs = await firebase.getRecommendedProducts(itemsCount);
+      const items = await productsApi.getRecommendedProducts(itemsCount);
 
-      if (docs.empty) {
+      if (items.length === 0) {
         if (didMount) {
           setError('No recommended products found.');
           setLoading(false);
         }
       } else {
-        const items = [];
-
-        docs.forEach((snap) => {
-          const data = snap.data();
-          items.push({ id: snap.ref.id, ...data });
-        });
-
         if (didMount) {
           setRecommendedProducts(items);
           setLoading(false);
