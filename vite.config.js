@@ -13,6 +13,18 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3000
+    port: 5173,
+    strictPort: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
+            proxyReq.removeHeader('origin');
+          });
+        }
+      }
+    }
   }
 })

@@ -1,6 +1,6 @@
 import { getAuthorizationHeaders } from './keycloak';
 
-const productUrl = import.meta.env.VITE_PRODUCT_API_URL || 'http://localhost:8080/api/product';
+const productUrl = import.meta.env.VITE_PRODUCT_API_URL || '/api/product';
 
 const fetchProducts = async () => {
   const controller = new AbortController();

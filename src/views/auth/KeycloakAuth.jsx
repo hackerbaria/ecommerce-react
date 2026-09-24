@@ -19,7 +19,7 @@ const KeycloakAuth = () => {
     try {
       const from = state?.from;
       const path = from?.pathname?.startsWith('/') && !from.pathname.startsWith('//')
-        ? `${from.pathname}${from.search || ''}` : '/';
+        ? `${from.pathname}${from.search || ''}${from.hash || ''}` : '/';
       if (account) {
         window.open(keycloak.createAccountUrl(), '_blank', 'noopener,noreferrer');
       } else {
@@ -38,14 +38,14 @@ const KeycloakAuth = () => {
       <div className="auth">
         <div className="auth-main">
           <h3>{title}</h3>
-          <p>{recovery ? 'Choose “Forgot Password” on the sign-in page to reset your password.' : 'A secure window will open. Your shop page stays here.'}</p>
+          <p>{recovery ? 'Choose Forgot Password on the sign-in page to reset your password.' : 'A secure window will open. Your shop page stays here.'}</p>
           {error && <p role="alert" className="toast-error">{error}</p>}
           <button className="button" type="button" disabled={busy} onClick={proceed}>
             {busy ? 'Waiting for sign-in...' : title}
           </button>
         </div>
       </div>
-      {!account && <div className="auth-message"><Link to={registration ? '/signin' : '/signup'}>{registration ? 'Already have an account? Sign in' : 'Create an account'}</Link></div>}
+      {!account && <div className="auth-message"><Link to={{ pathname: registration ? '/signin' : '/signup', state }}>{registration ? 'Already have an account? Sign in' : 'Create an account'}</Link></div>}
     </div>
   );
 };

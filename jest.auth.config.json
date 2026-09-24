@@ -1,0 +1,12 @@
+{
+  "testEnvironment": "jsdom",
+  "testMatch": [
+    "<rootDir>/test/auth/**/*.test.js"
+  ],
+  "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/src/$1"
+  },
+  "transform": {
+    "^.+\\.[jt]sx?$": "babel-jest"
+  }
+}

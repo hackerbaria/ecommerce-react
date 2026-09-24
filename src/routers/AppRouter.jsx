@@ -7,6 +7,7 @@ import { Route, Router, Switch } from 'react-router-dom';
 import * as view from '@/views';
 import AdminRoute from './AdminRoute';
 import ClientRoute from './ClientRoute';
+import CatalogRoute from './CatalogRoute';
 import PublicRoute from './PublicRoute';
 import { usesKeycloak } from '@/services/keycloak';
 import KeycloakAuth from '@/views/auth/KeycloakAuth';
@@ -21,7 +22,7 @@ const AppRouter = () => (
       <Navigation />
       <Basket />
       <Switch>
-        <Route
+        <CatalogRoute
           component={view.Search}
           exact
           path={ROUTES.SEARCH}
@@ -31,17 +32,17 @@ const AppRouter = () => (
           exact
           path={ROUTES.HOME}
         />
-        <Route
+        <CatalogRoute
           component={view.Shop}
           exact
           path={ROUTES.SHOP}
         />
-        <Route
+        <CatalogRoute
           component={view.FeaturedProducts}
           exact
           path={ROUTES.FEATURED_PRODUCTS}
         />
-        <Route
+        <CatalogRoute
           component={view.RecommendedProducts}
           exact
           path={ROUTES.RECOMMENDED_PRODUCTS}
@@ -59,7 +60,7 @@ const AppRouter = () => (
           component={usesKeycloak ? KeycloakAuth : view.ForgotPassword}
           path={ROUTES.FORGOT_PASSWORD}
         />
-        <Route
+        <CatalogRoute
           component={view.ViewProduct}
           path={ROUTES.VIEW_PRODUCT}
         />

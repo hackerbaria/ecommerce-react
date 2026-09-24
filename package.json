@@ -16,9 +16,11 @@
     "build:dev": "vite build --mode development && node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
     "build:prod": "vite build --mode production && node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
     "serve": "vite preview",
-    "test": "cross-env NODE_ENV=test jest --config=jest.config.json"
+    "test": "cross-env NODE_ENV=test jest --config=jest.config.json",
+    "test:auth": "cross-env NODE_ENV=test jest --config=jest.auth.config.json --runInBand"
   },
   "devDependencies": {
+    "@babel/preset-react": "7",
     "@vitejs/plugin-react": "^2.0.0",
     "babel-eslint": "10.1.0",
     "copy-webpack-plugin": "^8.1.1",

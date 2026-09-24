@@ -13,16 +13,9 @@ let initialization;
 export const initializeKeycloak = () => {
   if (!initialization) {
     initialization = keycloak.init({
-      onLoad: 'check-sso',
       pkceMethod: 'S256',
-      checkLoginIframe: false,
-      silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
-      silentCheckSsoFallback: false,
-      messageReceiveTimeout: 3000
-    }).catch(async () => {
-      // Browsers may block hidden SSO; leave the storefront usable without redirecting.
-      keycloak = new Keycloak(configuration);
-      return keycloak.init({ pkceMethod: 'S256', checkLoginIframe: false });
+      // Authenticate only when the visitor starts the sign-in popup.
+      checkLoginIframe: false
     });
   }
   return initialization;

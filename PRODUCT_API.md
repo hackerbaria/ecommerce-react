@@ -2,11 +2,20 @@ Product API configuration is selected by the Vite environment mode:
 
 | Command | Environment file | Product API URL |
 | --- | --- | --- |
-| `npm run dev` | `.env.development` | `http://localhost:8080/api/product` |
-| `npm run build:dev` | `.env.development` | `http://localhost:8080/api/product` |
+| `npm run dev` | `.env.development` | `/api/product`, proxied to `http://localhost:9000` |
+| `npm run build:dev` | `.env.development` | `/api/product` on the hosting origin |
 | `npm run build` or `npm run build:prod` | `.env.production` | `/api/product` on the deployed website's origin |
 
-Production hosting must route `/api/product` to the backend. For a separate
+Development serves the UI on http://localhost:5173 and proxies `/api` to the
+SpringCommerce gateway on port 9000. Catalog pages require sign-in in Keycloak mode.
+
+Development requests use Vite's same-origin proxy to avoid backend CORS rejection
+when the frontend port changes. The proxy removes the browser Origin header
+and preserves Authorization headers for backend authentication. Restart `yarn dev`
+after updating configuration. Remove any absolute `VITE_PRODUCT_API_URL` override
+in `.env.development.local` or the shell to use the proxy.
+
+Hosting for either build mode must route `/api/product` to the backend. For a separate
 production API host, create `.env.production.local` with:
 
 ```dotenv
@@ -43,6 +52,8 @@ the section shows the first products in API order, up to its display limit.
 Explicit `false` flags are respected; an all-false section stays empty.
 
 The server must allow CORS requests from the frontend origin (normally
-`http://localhost:3000`). Authentication, profile/basket persistence, and
-admin product/image writes still use Firebase. Admin writes therefore do
+`http://localhost:5173`). Development authentication uses Keycloak; tokens are attached to gateway requests.
+The basket remains browser-local in Keycloak mode. Production retains Firebase
+unless configured otherwise (see KEYCLOAK.md). Admin product/image writes still
+use Firebase and therefore do
 not update this API's catalog until the backend write integration is added.
