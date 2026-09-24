@@ -26,8 +26,7 @@ VITE_PRODUCT_API_URL=https://your-api.example.com/api/product
 
 Use `.env.development.local` for local development overrides. These local
 files are ignored by Git. Mode-specific values override shared values in
-`.env`; existing Firebase settings remain there. To use separate Firebase
-projects, set the same `VITE_FIREBASE_*` variables in each mode's local file.
+`.env`. Configure the identity server using `VITE_KEYCLOAK_*` values.
 Environment variables supplied by the shell take precedence over env files.
 
 Restart the dev server after changing configuration. Build URLs are embedded
@@ -56,7 +55,6 @@ Explicit `false` flags are respected; an all-false section stays empty.
 The server must allow CORS requests from the frontend origin (normally
 `http://localhost:5173`). The gateway must permit anonymous product GET requests;
 product writes and other protected APIs still require authentication.
-The basket remains browser-local in Keycloak mode. Production retains Firebase
-unless configured otherwise (see KEYCLOAK.md). Admin product/image writes still
-use Firebase and therefore do
-not update this API's catalog until the backend write integration is added.
+The basket remains browser-local. Gateway/Keycloak authentication is used in all
+environments (see KEYCLOAK.md). Profile updates and admin product/image writes
+are disabled until replacement backend APIs are integrated.

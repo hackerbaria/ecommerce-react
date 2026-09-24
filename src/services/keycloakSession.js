@@ -20,7 +20,7 @@ export const syncKeycloakSession = (store) => {
     return;
   }
   const claims = keycloak.tokenParsed;
-  // Admin product writes still require Firebase; Keycloak users use the storefront.
+  // Admin product writes are not integrated; authenticated users use the storefront.
   store.dispatch(setProfile({
     fullname: claims.name || claims.preferred_username || 'User',
     email: claims.email || '',

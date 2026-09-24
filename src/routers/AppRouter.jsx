@@ -9,12 +9,13 @@ import AdminRoute from './AdminRoute';
 import ClientRoute from './ClientRoute';
 import CatalogRoute from './CatalogRoute';
 import PublicRoute from './PublicRoute';
-import { usesKeycloak } from '@/services/keycloak';
 import KeycloakAuth from '@/views/auth/KeycloakAuth';
 
 // Revert back to history v4.10.0 because
 // v5.0 breaks navigation
 export const history = createBrowserHistory();
+
+const ProductWritesUnavailable = () => <p role="status">Product changes are currently unavailable.</p>;
 
 const AppRouter = () => (
   <Router history={history}>
@@ -48,16 +49,16 @@ const AppRouter = () => (
           path={ROUTES.RECOMMENDED_PRODUCTS}
         />
         <PublicRoute
-          component={usesKeycloak ? KeycloakAuth : view.SignUp}
+          component={KeycloakAuth}
           path={ROUTES.SIGNUP}
         />
         <PublicRoute
-          component={usesKeycloak ? KeycloakAuth : view.SignIn}
+          component={KeycloakAuth}
           exact
           path={ROUTES.SIGNIN}
         />
         <PublicRoute
-          component={usesKeycloak ? KeycloakAuth : view.ForgotPassword}
+          component={KeycloakAuth}
           path={ROUTES.FORGOT_PASSWORD}
         />
         <CatalogRoute
@@ -70,7 +71,7 @@ const AppRouter = () => (
           path={ROUTES.ACCOUNT}
         />
         <ClientRoute
-          component={usesKeycloak ? KeycloakAuth : view.EditAccount}
+          component={KeycloakAuth}
           exact
           path={ROUTES.ACCOUNT_EDIT}
         />
@@ -96,11 +97,11 @@ const AppRouter = () => (
           path={ROUTES.ADMIN_PRODUCTS}
         />
         <AdminRoute
-          component={view.AddProduct}
+          component={ProductWritesUnavailable}
           path={ROUTES.ADD_PRODUCT}
         />
         <AdminRoute
-          component={view.EditProduct}
+          component={ProductWritesUnavailable}
           path={`${ROUTES.EDIT_PRODUCT}/:id`}
         />
         <PublicRoute component={view.PageNotFound} />

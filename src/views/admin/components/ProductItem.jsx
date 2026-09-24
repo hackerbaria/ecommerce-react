@@ -72,6 +72,8 @@ const ProductItem = ({ product }) => {
           <div className="item-action">
             <button
               className="button button-border button-small"
+              disabled
+              title="Product changes are currently unavailable."
               onClick={onClickEdit}
               type="button"
             >
@@ -80,6 +82,8 @@ const ProductItem = ({ product }) => {
             &nbsp;
             <button
               className="button button-border button-small button-danger"
+              disabled
+              title="Product changes are currently unavailable."
               onClick={onDeleteProduct}
               type="button"
             >

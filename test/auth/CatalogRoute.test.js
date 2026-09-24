@@ -6,9 +6,7 @@ import { createStore } from 'redux';
 import { Router, Route, Switch } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import CatalogRoute from '@/routers/CatalogRoute';
-import * as authConfig from '@/services/keycloak';
 
-jest.mock('@/services/keycloak', () => ({ __esModule: true, usesKeycloak: true }));
 
 let container;
 let mounts;
@@ -38,7 +36,6 @@ beforeEach(() => {
   container = document.createElement('div');
   document.body.appendChild(container);
   mounts = jest.fn();
-  authConfig.usesKeycloak = true;
 });
 
 afterEach(() => {
@@ -61,10 +58,4 @@ test('signed-in users can continue browsing after logout', () => {
   act(() => { store.dispatch({ type: 'logout' }); });
   expect(container.textContent).toBe('Products');
   expect(history.location.pathname).toBe('/shop');
-});
-
-test('Firebase mode preserves public catalog browsing', () => {
-  authConfig.usesKeycloak = false;
-  renderRoute(null);
-  expect(container.textContent).toBe('Products');
 });

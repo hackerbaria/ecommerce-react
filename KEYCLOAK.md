@@ -3,8 +3,29 @@
 The shop-styled login theme is in `keycloak/themes/salinaka`. See
 [theme installation](keycloak/README.md) for Docker installation and activation.
 
-Development uses `http://localhost:8181`, realm `springcommerce`, and public
-client `springcommerce-web`. Restart `yarn dev` after changing env files.
+Development uses `http://localhost:8181`, realm `springcommerce`, and the
+`springcommerce-gateway` client configured in `.env.development`. Restart
+`yarn dev` after changing env files.
+
+## Username/password sign-in
+
+Sign In displays a form in the shop. Submitting it sends JSON containing
+`username` and `password` to `POST /api/auth/login`, proxied in development to
+`http://localhost:9000/api/auth/login`. The gateway exchanges the credentials
+with Keycloak; enable Direct access grants on its configured client. Any client
+secret belongs only in the gateway configuration, never in Vite variables.
+
+The response uses `access_token` and `expires_in`. The app keeps the access token
+in memory and synchronizes the existing Redux profile and route guards. It does
+not persist credentials or tokens. The gateway has no refresh or revocation
+endpoint, so this flow does not use the returned refresh token: access-token
+expiry and reload require sign-in again. Sign Out clears the app session; it
+does not revoke the server token, which remains valid until expiry.
+Protected APIs must validate the token; decoded claims only populate the UI.
+
+Production hosting must forward `/api/auth/login` to the gateway as well.
+
+## Hosted registration and account flows
 
 Configure this client in the Keycloak admin console:
 
@@ -17,7 +38,7 @@ Configure this client in the Keycloak admin console:
 - Realm settings → Login → User registration: On.
 - Enable Forgot password and configure SMTP if password recovery is needed.
 
-Signup and login open the shop-styled hosted forms in a popup. The shop tab stays
+Signup and password recovery use hosted forms in a popup. The shop tab stays
 in place. Add `http://localhost:5173/auth/popup-callback` to valid redirect URIs
 (included in the supplied client import). Production hosting must
 serve the React app for `/auth/popup` and `/auth/popup-callback`.
@@ -30,12 +51,12 @@ verify the flow against your deployed headers.
 
 Startup initializes the client without checking SSO or opening a login redirect.
 The landing page and product catalog are public, including featured and recommended
-products. Users click Sign In to authenticate in a popup.
-Reloading starts signed out until the user signs in again; an existing Keycloak
-server session may complete the popup without asking for credentials. Popups
-must be allowed for the shop. Account settings open in a separate tab; logout
-still uses the normal server logout redirect. Session expiry is detected during
-token refresh. Public product reads do not send an Authorization header.
+products. Users click Sign In to enter credentials in the shop.
+Reloading starts signed out until the user signs in again. Popups must be allowed
+for hosted registration and recovery. Account settings open in a separate tab
+and may require a separate hosted login. Sessions obtained through a hosted
+popup still use Keycloak refresh and server logout; gateway form sessions use
+the expiry and local logout behavior above. Public product reads do not send an Authorization header.
 The Spring backend must
 validate issuer/audience and authorize protected requests; frontend route checks
 are only for navigation. The development proxy forwards `/api` to the gateway on port 9000.
@@ -49,17 +70,16 @@ TLS, and set `VITE_KEYCLOAK_URL` accordingly. The backend issuer must match this
 public URL. Frontend code cannot hide the identity provider from network inspection.
 
 The account page displays identity claims; Edit Account opens Keycloak's account
-console. Keycloak does not supply the old Firebase account creation date, shipping
+console. Keycloak does not supply an account creation date, shipping
 profile, or product administration data. Keycloak users receive storefront access
 only until backend authorization and admin write endpoints are integrated.
-Basket data is stored in this browser, not Firebase; logout clears it and checkout
+Basket data is stored in this browser; logout clears it and checkout
 state. No server profile/basket synchronization is implemented.
 
-Production keeps the existing Firebase mode until deployment configuration is
-provided. To enable Keycloak in production, add `.env.production.local`:
+Gateway/Keycloak authentication is used in every environment. Configure the
+production identity server in `.env.production.local` before deploying:
 
 ```dotenv
-VITE_AUTH_PROVIDER=keycloak
 VITE_KEYCLOAK_URL=https://your-keycloak.example.com
 VITE_KEYCLOAK_REALM=springcommerce
 VITE_KEYCLOAK_CLIENT_ID=springcommerce-web
@@ -92,7 +112,7 @@ Enable User registration in Realm settings > Login to use signup. Recreate the
 Keycloak service with `docker compose up -d keycloak` from the parent directory
 to apply the theme mount. Preserve its database; no reset is needed.
 
-Catalog pages allow guest browsing in both authentication modes. The gateway must
+Catalog pages allow guest browsing. The gateway must
 permit anonymous GET requests to `/api/product` and `/api/product/**`, while
 keeping product writes and other protected APIs authenticated.
 
@@ -104,7 +124,7 @@ hosted form. Password recovery additionally needs realm SMTP configuration.
 ## Focused checks
 
 Run `yarn test:auth` for route protection, login return paths, registration
-navigation and popup failure regression tests. This uses React DOM and the
+navigation, login form/API errors, and session expiry regression tests. This uses React DOM and the
 existing Jest installation, without the legacy React 16 Enzyme adapter.
 Run `yarn build:dev` and `yarn build:prod` to verify both environment modes.
 Production authentication remains deployment-configured as described above.

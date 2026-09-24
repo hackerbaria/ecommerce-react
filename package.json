@@ -32,6 +32,7 @@
     "enzyme-to-json": "^3.6.2",
     "eslint": "^7.25.0",
     "eslint-config-airbnb": "^18.2.1",
+    "eslint-import-resolver-alias": "1.1.2",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
@@ -59,7 +60,6 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
-    "firebase": "^8.4.3",
     "formik": "^2.2.6",
     "history": "^4.10.0",
     "keycloak-js": "^26.2.4",

@@ -1,4 +1,4 @@
 root = true
 
-[*.{js,jsx}]
+[*]
 end_of_line = lf

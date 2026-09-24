@@ -75,8 +75,7 @@ const ProductForm = ({ product, onSubmit, isLoading }) => {
       onSubmit({
         ...form,
         quantity: 1,
-        // due to firebase function billing policy, let's add lowercase version
-        // of name here instead in firebase functions
+        // Normalize product names before submission.
         name_lower: form.name.toLowerCase(),
         dateAdded: new Date().getTime(),
         image: imageFile?.image?.file || product.imageUrl,

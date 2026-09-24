@@ -1,14 +1,12 @@
 import Keycloak from 'keycloak-js';
 import createGatewaySession from './gatewaySession';
 
-export const usesKeycloak = import.meta.env.VITE_AUTH_PROVIDER === 'keycloak';
-
 const configuration = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
   realm: import.meta.env.VITE_KEYCLOAK_REALM,
   clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID
 };
-let keycloak = usesKeycloak ? new Keycloak(configuration) : null;
+let keycloak = new Keycloak(configuration);
 
 let initialization;
 export const initializeKeycloak = () => {

@@ -2,11 +2,9 @@
 import { BasketItem, BasketToggle } from '@/components/basket';
 import { Boundary, Modal } from '@/components/common';
 import { CHECKOUT_STEP_1 } from '@/constants/routes';
-import firebase from '@/services/firebase';
-import { usesKeycloak } from '@/services/keycloak';
 import { calculateTotal, displayMoney } from '@/helpers/utils';
-import { useDidMount, useModal } from '@/hooks';
-import React, { useEffect } from 'react';
+import { useModal } from '@/hooks';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { clearBasket } from '@/redux/actions/basketActions';
@@ -20,20 +18,6 @@ const Basket = () => {
   const history = useHistory();
   const { pathname } = useLocation();
   const dispatch = useDispatch();
-  const didMount = useDidMount();
-
-  useEffect(() => {
-    if (!usesKeycloak && didMount && firebase.auth.currentUser && basket.length !== 0) {
-      firebase.saveBasketItems(basket, firebase.auth.currentUser.uid)
-        .then(() => {
-          console.log('Item saved to basket');
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
-  }, [basket.length]);
-
   const onCheckOut = () => {
     if ((basket.length !== 0 && user)) {
       document.body.classList.remove('is-basket-open');
