@@ -12,12 +12,11 @@ import { resetFilter } from '@/redux/actions/filterActions';
 import { setAuthenticating, setAuthStatus } from '@/redux/actions/miscActions';
 import { clearProfile } from '@/redux/actions/profileActions';
 import { history } from '@/routers/AppRouter';
-import keycloak from '@/services/keycloak';
+import { logout } from '@/services/authSession';
 import loginWithPassword from '@/services/login';
-import { openSignInPopup } from '@/services/authPopup';
 
 function* authSaga({ type, payload }) {
-  // Session events now come from the gateway/Keycloak session bridge. Tokens
+  // Session events now come from the gateway session bridge. Tokens
   // remain in memory; legacy persistence and provider-specific user events are ignored.
   if ([ON_AUTHSTATE_CHANGED, ON_AUTHSTATE_SUCCESS, SET_AUTH_PERSISTENCE].includes(type)) return;
   if (type === ON_AUTHSTATE_FAIL) {
@@ -48,8 +47,7 @@ function* authSaga({ type, payload }) {
         }));
         break;
       case SIGNUP:
-        yield call(openSignInPopup, true);
-        break;
+        throw new Error('Account registration is currently unavailable.');
       case SIGNOUT:
         // Clear local state even if the provider logout request fails.
         yield put(clearBasket());
@@ -57,7 +55,7 @@ function* authSaga({ type, payload }) {
         yield put(resetFilter());
         yield put(resetCheckout());
         yield put(signOutSuccess());
-        yield call([keycloak, keycloak.logout], { redirectUri: window.location.origin });
+        yield call(logout);
         yield call([history, history.push], ROUTE_SIGNIN);
         break;
       case RESET_PASSWORD:

@@ -3,26 +3,23 @@ import ReactDOM from 'react-dom';
 import { act, Simulate } from 'react-dom/test-utils';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
-import KeycloakAuth from '@/views/auth/KeycloakAuth';
-import { openSignInPopup } from '@/services/authPopup';
+import GatewayAuth from '@/views/auth/GatewayAuth';
 import loginWithPassword from '@/services/login';
 
-jest.mock('@/services/keycloak', () => ({ __esModule: true, default: {} }));
-jest.mock('@/services/authPopup', () => ({ openSignInPopup: jest.fn() }));
+jest.mock('@/services/authSession', () => ({ __esModule: true, default: {} }));
 jest.mock('@/services/login', () => ({ __esModule: true, default: jest.fn() }));
 let container;
 const destination = { pathname: '/shop', search: '?brand=demo', hash: '#products' };
 
 const mount = (pathname = '/signin') => {
   const history = createMemoryHistory({ initialEntries: [{ pathname, state: { from: destination } }] });
-  act(() => { ReactDOM.render(<Router history={history}><KeycloakAuth /></Router>, container); });
+  act(() => { ReactDOM.render(<Router history={history}><GatewayAuth /></Router>, container); });
   return history;
 };
 
 beforeEach(() => {
   container = document.createElement('div');
   document.body.appendChild(container);
-  openSignInPopup.mockReset();
   loginWithPassword.mockReset();
 });
 afterEach(() => {
@@ -43,7 +40,6 @@ test('successful form login returns to the original path, query and fragment', a
   const history = mount();
   await submitCredentials();
   expect(loginWithPassword).toHaveBeenCalledWith('testuser1', 'test-password', expect.any(AbortSignal));
-  expect(openSignInPopup).not.toHaveBeenCalled();
   expect(history.location).toMatchObject(destination);
 });
 
@@ -71,9 +67,8 @@ test('empty credentials do not call the login API', async () => {
   expect(container.textContent).toContain('Username is required.');
 });
 
-test('registration still opens the hosted registration form', async () => {
-  openSignInPopup.mockResolvedValue();
-  mount('/signup');
-  await act(async () => { Simulate.click(container.querySelector('button')); });
-  expect(openSignInPopup).toHaveBeenCalledWith(true);
+test.each(['/signup', '/forgot_password', '/account/edit'])('unsupported account flow %s stays in the app', (path) => {
+  mount(path);
+  expect(container.querySelector('[role="status"]').textContent).toContain('currently unavailable');
+  expect(container.querySelector('button')).toBeNull();
 });

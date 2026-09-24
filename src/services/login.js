@@ -1,4 +1,4 @@
-import { acceptGatewaySession } from './keycloak';
+import { acceptGatewaySession } from './authSession';
 
 const loginWithPassword = async (username, password, signal) => {
   let response;

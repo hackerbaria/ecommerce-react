@@ -5,11 +5,11 @@ import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Route, Router, Switch } from 'react-router-dom';
 import * as view from '@/views';
+import GatewayAuth from '@/views/auth/GatewayAuth';
 import AdminRoute from './AdminRoute';
 import ClientRoute from './ClientRoute';
 import CatalogRoute from './CatalogRoute';
 import PublicRoute from './PublicRoute';
-import KeycloakAuth from '@/views/auth/KeycloakAuth';
 
 // Revert back to history v4.10.0 because
 // v5.0 breaks navigation
@@ -49,16 +49,16 @@ const AppRouter = () => (
           path={ROUTES.RECOMMENDED_PRODUCTS}
         />
         <PublicRoute
-          component={KeycloakAuth}
+          component={GatewayAuth}
           path={ROUTES.SIGNUP}
         />
         <PublicRoute
-          component={KeycloakAuth}
+          component={GatewayAuth}
           exact
           path={ROUTES.SIGNIN}
         />
         <PublicRoute
-          component={KeycloakAuth}
+          component={GatewayAuth}
           path={ROUTES.FORGOT_PASSWORD}
         />
         <CatalogRoute
@@ -71,7 +71,7 @@ const AppRouter = () => (
           path={ROUTES.ACCOUNT}
         />
         <ClientRoute
-          component={KeycloakAuth}
+          component={GatewayAuth}
           exact
           path={ROUTES.ACCOUNT_EDIT}
         />

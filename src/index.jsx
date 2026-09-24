@@ -5,9 +5,8 @@ import { render } from 'react-dom';
 import 'react-phone-input-2/lib/style.css';
 import '@/styles/style.scss';
 import WebFont from 'webfontloader';
-import keycloak, { initializeKeycloak } from '@/services/keycloak';
-import { runSignInPopup } from '@/services/authPopup';
-import { syncKeycloakSession, clearKeycloakSession } from '@/services/keycloakSession';
+import { getSession } from '@/services/authSession';
+import { syncAuthSession, clearAuthSession } from '@/services/syncAuthSession';
 
 WebFont.load({
   google: {
@@ -19,27 +18,6 @@ const root = document.getElementById('app');
 render(<Preloader />, root);
 
 const start = async () => {
-  if (['/auth/popup', '/auth/popup-callback'].includes(window.location.pathname)) {
-    document.title = 'Sign in | Salinaka';
-    try {
-      await runSignInPopup();
-      render(
-        <div className="auth-content">
-          <h3>Completing sign-in...</h3>
-          <p>You can return to the shop.</p>
-        </div>, root
-      );
-    } catch (error) {
-      render(<div role="alert">{error.message}</div>, root);
-    }
-    return;
-  }
-  let authError;
-  try {
-    await initializeKeycloak();
-  } catch (error) {
-    authError = error;
-  }
   const [{ default: configureStore }, { default: App }] = await Promise.all([
     import('@/redux/store/store'), import('./App')
   ]);
@@ -51,19 +29,12 @@ const start = async () => {
       if (persistor.getState().bootstrapped) { unsubscribe(); resolve(); }
     });
   });
-  syncKeycloakSession(store);
-  window.addEventListener('shop-auth-changed', () => syncKeycloakSession(store));
-  keycloak.onAuthLogout = () => clearKeycloakSession(store);
-  keycloak.onAuthRefreshSuccess = () => syncKeycloakSession(store);
-  keycloak.onTokenExpired = () => {
-    keycloak.updateToken(30).catch(() => keycloak.clearToken());
-  };
-  render(
-    <>
-      {authError && <div role="alert">Sign-in is currently unavailable. Reload to retry.</div>}
-      <App store={store} persistor={persistor} />
-    </>, root
-  );
+  syncAuthSession(store);
+  window.addEventListener('shop-auth-changed', () => {
+    if (getSession()?.authenticated) syncAuthSession(store);
+    else clearAuthSession(store);
+  });
+  render(<App store={store} persistor={persistor} />, root);
 };
 start().catch(() => {
   render(<div role="alert">Unable to start the shop. Please reload and try again.</div>, root);

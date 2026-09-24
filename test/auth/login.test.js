@@ -1,7 +1,7 @@
 import loginWithPassword from '@/services/login';
-import { acceptGatewaySession } from '@/services/keycloak';
+import { acceptGatewaySession } from '@/services/authSession';
 
-jest.mock('@/services/keycloak', () => ({ acceptGatewaySession: jest.fn() }));
+jest.mock('@/services/authSession', () => ({ acceptGatewaySession: jest.fn() }));
 const originalFetch = global.fetch;
 beforeEach(() => { global.fetch = jest.fn(); acceptGatewaySession.mockReset(); });
 afterEach(() => { global.fetch = originalFetch; });

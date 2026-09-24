@@ -1,25 +1,26 @@
-import keycloak from './keycloak';
 import { signInSuccess, signOutSuccess } from '@/redux/actions/authActions';
 import { setProfile, clearProfile } from '@/redux/actions/profileActions';
 import { clearBasket } from '@/redux/actions/basketActions';
 import { resetCheckout } from '@/redux/actions/checkoutActions';
 import defaultAvatar from '@/images/defaultAvatar.jpg';
 import defaultBanner from '@/images/defaultBanner.jpg';
+import { getSession } from './authSession';
 
-export const clearKeycloakSession = (store) => {
+export const clearAuthSession = (store) => {
   store.dispatch(signOutSuccess());
   store.dispatch(clearProfile());
   store.dispatch(clearBasket());
   store.dispatch(resetCheckout());
 };
 
-export const syncKeycloakSession = (store) => {
-  if (!keycloak.authenticated) {
+export const syncAuthSession = (store) => {
+  const session = getSession();
+  if (!session?.authenticated) {
     store.dispatch(signOutSuccess());
     store.dispatch(clearProfile());
     return;
   }
-  const claims = keycloak.tokenParsed;
+  const claims = session.tokenParsed;
   // Admin product writes are not integrated; authenticated users use the storefront.
   store.dispatch(setProfile({
     fullname: claims.name || claims.preferred_username || 'User',
@@ -31,5 +32,5 @@ export const syncKeycloakSession = (store) => {
     role: 'USER',
     dateJoined: null
   }));
-  store.dispatch(signInSuccess({ id: claims.sub, role: 'USER', provider: 'keycloak' }));
+  store.dispatch(signInSuccess({ id: claims.sub, role: 'USER', provider: 'gateway' }));
 };

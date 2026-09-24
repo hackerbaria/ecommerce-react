@@ -1,5 +1,5 @@
 // The gateway has a login endpoint, but no refresh or revocation endpoint yet.
-const createGatewaySession = (response, createAccountUrl) => {
+const createGatewaySession = (response) => {
   let claims;
   try {
     const payload = response.access_token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
@@ -21,7 +21,6 @@ const createGatewaySession = (response, createAccountUrl) => {
     authenticated: true,
     token: response.access_token,
     tokenParsed: claims,
-    createAccountUrl,
     clearToken() {
       clearTimeout(timer);
       const wasAuthenticated = this.authenticated;
