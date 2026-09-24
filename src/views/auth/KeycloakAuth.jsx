@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import keycloak from '@/services/keycloak';
 import { openSignInPopup } from '@/services/authPopup';
+import GatewayLogin from './GatewayLogin';
 
 const KeycloakAuth = () => {
   const { pathname, state } = useLocation();
@@ -32,6 +33,8 @@ const KeycloakAuth = () => {
       setBusy(false);
     }
   };
+
+  if (!registration && !account && !recovery) return <GatewayLogin />;
 
   return (
     <div className="auth-content">
