@@ -1,5 +1,3 @@
-import { getAuthorizationHeaders } from './keycloak';
-
 const productUrl = import.meta.env.VITE_PRODUCT_API_URL || '/api/product';
 
 const fetchProducts = async () => {
@@ -8,7 +6,7 @@ const fetchProducts = async () => {
 
   try {
     const response = await fetch(productUrl, {
-      headers: { Accept: 'application/json', ...await getAuthorizationHeaders() },
+      headers: { Accept: 'application/json' },
       signal: controller.signal
     });
     if (!response.ok) {

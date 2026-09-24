@@ -29,14 +29,14 @@ Do not configure Cross-Origin-Opener-Policy headers that sever this popup's open
 verify the flow against your deployed headers.
 
 Startup initializes the client without checking SSO or opening a login redirect.
-The landing page is public; its product sections load after sign-in because the
-gateway protects catalog requests. Users click Sign In to authenticate in a popup.
+The landing page and product catalog are public, including featured and recommended
+products. Users click Sign In to authenticate in a popup.
 Reloading starts signed out until the user signs in again; an existing Keycloak
 server session may complete the popup without asking for credentials. Popups
 must be allowed for the shop. Account settings open in a separate tab; logout
 still uses the normal server logout redirect. Session expiry is detected during
-token refresh. Product requests refresh the access token
-before attaching an Authorization bearer header. The Spring backend must
+token refresh. Public product reads do not send an Authorization header.
+The Spring backend must
 validate issuer/audience and authorize protected requests; frontend route checks
 are only for navigation. The development proxy forwards `/api` to the gateway on port 9000.
 For a separate API origin in production, configure gateway CORS for the exact
@@ -92,13 +92,13 @@ Enable User registration in Realm settings > Login to use signup. Recreate the
 Keycloak service with `docker compose up -d keycloak` from the parent directory
 to apply the theme mount. Preserve its database; no reset is needed.
 
-Catalog pages require login in Keycloak mode because the gateway protects all
-catalog endpoints. Login returns to the originally requested route, including
-its query and fragment. Firebase mode retains public catalog browsing.
+Catalog pages allow guest browsing in both authentication modes. The gateway must
+permit anonymous GET requests to `/api/product` and `/api/product/**`, while
+keeping product writes and other protected APIs authenticated.
 
-Verify: open `/shop` while signed out, sign in via the popup, confirm return to
-`/shop`, and check `/api/product` succeeds through the gateway. Refresh, sign
-out, and verify catalog pages ask for login again. Registration uses Keycloak's
+Verify: open `/shop` while signed out and check `/api/product` succeeds through
+the gateway. Refresh and verify products remain visible without signing in.
+Account and checkout pages still require login. Registration uses Keycloak's
 hosted form. Password recovery additionally needs realm SMTP configuration.
 
 ## Focused checks

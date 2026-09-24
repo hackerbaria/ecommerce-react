@@ -2,16 +2,18 @@ Product API configuration is selected by the Vite environment mode:
 
 | Command | Environment file | Product API URL |
 | --- | --- | --- |
-| `npm run dev` | `.env.development` | `/api/product`, proxied to `http://localhost:9000` |
+| `npm run dev` | `.env.development` | `/api/product`, proxied to `http://localhost:8080` |
 | `npm run build:dev` | `.env.development` | `/api/product` on the hosting origin |
 | `npm run build` or `npm run build:prod` | `.env.production` | `/api/product` on the deployed website's origin |
 
-Development serves the UI on http://localhost:5173 and proxies `/api` to the
-SpringCommerce gateway on port 9000. Catalog pages require sign-in in Keycloak mode.
+Development serves the UI on http://localhost:5173 and proxies `/api/product`
+directly to the product service at `http://localhost:8080/api/product`.
+Other `/api` requests use the SpringCommerce gateway on port 9000.
+Catalog pages and product GET requests are public.
 
 Development requests use Vite's same-origin proxy to avoid backend CORS rejection
-when the frontend port changes. The proxy removes the browser Origin header
-and preserves Authorization headers for backend authentication. Restart `yarn dev`
+when the frontend port changes. The gateway proxy removes the browser Origin header.
+Public product requests do not attach authentication tokens. Restart `yarn dev`
 after updating configuration. Remove any absolute `VITE_PRODUCT_API_URL` override
 in `.env.development.local` or the shell to use the proxy.
 
@@ -52,7 +54,8 @@ the section shows the first products in API order, up to its display limit.
 Explicit `false` flags are respected; an all-false section stays empty.
 
 The server must allow CORS requests from the frontend origin (normally
-`http://localhost:5173`). Development authentication uses Keycloak; tokens are attached to gateway requests.
+`http://localhost:5173`). The gateway must permit anonymous product GET requests;
+product writes and other protected APIs still require authentication.
 The basket remains browser-local in Keycloak mode. Production retains Firebase
 unless configured otherwise (see KEYCLOAK.md). Admin product/image writes still
 use Firebase and therefore do

@@ -46,21 +46,21 @@ afterEach(() => {
   container.remove();
 });
 
-test('signed-out users reach login without mounting protected API consumers', () => {
+test('signed-out users can browse products without a login redirect', () => {
   const { history } = renderRoute(null);
-  expect(container.textContent).toBe('Sign in');
-  expect(mounts).not.toHaveBeenCalled();
-  expect(history.location.state.from).toMatchObject({
+  expect(container.textContent).toBe('Products');
+  expect(mounts).toHaveBeenCalled();
+  expect(history.location).toMatchObject({
     pathname: '/shop', search: '?brand=demo', hash: '#products'
   });
 });
 
-test('signed-in users can browse and logout protects the page immediately', () => {
+test('signed-in users can continue browsing after logout', () => {
   const { store, history } = renderRoute({ id: 'user-1', role: 'USER' });
   expect(container.textContent).toBe('Products');
   act(() => { store.dispatch({ type: 'logout' }); });
-  expect(container.textContent).toBe('Sign in');
-  expect(history.location.pathname).toBe('/signin');
+  expect(container.textContent).toBe('Products');
+  expect(history.location.pathname).toBe('/shop');
 });
 
 test('Firebase mode preserves public catalog browsing', () => {

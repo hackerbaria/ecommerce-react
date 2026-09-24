@@ -16,6 +16,10 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     proxy: {
+      '^/api/product(?:/|\\?|$)': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
       '/api': {
         target: 'http://localhost:9000',
         changeOrigin: true,

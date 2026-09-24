@@ -7,8 +7,6 @@ import {
 } from '@/hooks';
 import bannerImg from '@/images/banner-girl.png';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { usesKeycloak } from '@/services/keycloak';
 import { Link } from 'react-router-dom';
 
 
@@ -72,9 +70,6 @@ const Home = () => {
   useDocumentTitle('Salinaka | Home');
   useScrollTop();
 
-  const authenticated = useSelector(({ auth }) => Boolean(auth));
-  const canLoadProducts = !usesKeycloak || authenticated;
-
   return (
     <main className="content">
       <div className="home">
@@ -97,7 +92,7 @@ const Home = () => {
           </div>
           <div className="banner-img"><img src={bannerImg} alt="" /></div>
         </div>
-        {canLoadProducts && <HomeProducts />}
+        <HomeProducts />
       </div>
     </main>
   );
